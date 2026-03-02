@@ -2,6 +2,7 @@ package com.college.eventmanagement.controller;
 
 import com.college.eventmanagement.dto.EventRequestDTO;
 import com.college.eventmanagement.dto.EventResponseDTO;
+import com.college.eventmanagement.dto.UpdateEventRequestDTO;
 import com.college.eventmanagement.service.EventService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,13 @@ public class EventController {
     @DeleteMapping("/delete-event-by-id/{Id}")
     public ResponseEntity<EventResponseDTO> deleteEventById(@PathVariable String Id){
         return new ResponseEntity<>(eventService.deleteEventById(Id),HttpStatus.OK);
+    }
+
+    @PutMapping("/update-event-by-id/{Id}")
+    public ResponseEntity<EventResponseDTO> updateEventById(
+            @PathVariable String Id,
+            @Valid @RequestBody UpdateEventRequestDTO updateRequestDTO){
+        return new ResponseEntity<>(eventService.updateEvent(Id,updateRequestDTO),HttpStatus.OK);
     }
 
 }

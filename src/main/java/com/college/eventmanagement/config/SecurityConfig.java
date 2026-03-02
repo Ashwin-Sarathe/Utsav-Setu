@@ -37,6 +37,8 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events/create-event").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/events/delete-event-by-id/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/events/update-event-by-id/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

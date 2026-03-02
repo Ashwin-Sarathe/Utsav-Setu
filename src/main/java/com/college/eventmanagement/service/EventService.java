@@ -2,6 +2,7 @@ package com.college.eventmanagement.service;
 
 import com.college.eventmanagement.dto.EventRequestDTO;
 import com.college.eventmanagement.dto.EventResponseDTO;
+import com.college.eventmanagement.dto.UpdateEventRequestDTO;
 import com.college.eventmanagement.exception.ConflictException;
 import com.college.eventmanagement.exception.ResourceNotFoundException;
 import com.college.eventmanagement.model.Event;
@@ -95,5 +96,21 @@ public class EventService {
         Event e = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event Not Found!"));
         eventRepository.deleteById(id);
         return mapToResponse(e);
+    }
+
+    public EventResponseDTO updateEvent(String id, UpdateEventRequestDTO dto){
+        Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        if(dto.getMaxParticipants() < event.getCurrentParticipants()){
+            throw new ConflictException("Cannot reduce capacity below current registrations");
+        }
+        event.setTitle(dto.getTitle());
+        event.setVenue(dto.getVenue());
+        event.setEventTime(dto.getTime());
+        event.setDescription(dto.getDescription());
+        event.setEventDate(dto.getDate());
+        event.setMaxParticipants(dto.getMaxParticipants());
+
+        Event updatedEvent = eventRepository.save(event);
+        return mapToResponse(updatedEvent);
     }
 }
