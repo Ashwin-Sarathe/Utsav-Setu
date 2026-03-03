@@ -8,10 +8,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -49,4 +51,14 @@ public class EventController {
         return new ResponseEntity<>(eventService.updateEvent(Id,updateRequestDTO),HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Page<EventResponseDTO>> searchEvents(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String venue,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)LocalDate date,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+            ){
+        return new ResponseEntity<>(eventService.searchEvents(title, venue, date, page, size), HttpStatus.OK);
+    }
 }

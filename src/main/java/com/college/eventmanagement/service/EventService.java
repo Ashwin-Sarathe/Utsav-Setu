@@ -11,10 +11,19 @@ import com.college.eventmanagement.repository.EventRepository;
 import com.college.eventmanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -25,6 +34,8 @@ public class EventService {
     private EventRepository eventRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public EventResponseDTO createEvent(EventRequestDTO eventRequest){
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -102,5 +113,41 @@ public class EventService {
 
         Event updatedEvent = eventRepository.save(event);
         return mapToResponse(updatedEvent);
+    }
+
+    public Page<EventResponseDTO> searchEvents(
+            String title,
+            String venue,
+            LocalDate date,
+            int page,
+            int size
+    ){
+        Query query = new Query();
+        List<Criteria> criteriaList = new ArrayList<>();
+        if(title != null && !title.isEmpty()){
+            criteriaList.add(
+                    Criteria.where("title").regex(title,"i")
+                    // "i" makes it case-insensitive
+                    // regex -> partial case-insensitive matching
+            );
+        }
+        if(venue != null && !venue.isEmpty()){
+            criteriaList.add(
+                    Criteria.where("venue").regex(venue,"i")
+            );
+        }
+        if(date!=null){
+            criteriaList.add(Criteria.where("date").is(date));
+        }
+        if(!criteriaList.isEmpty()){
+            query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
+        }
+        Pageable pageable = PageRequest.of(page,size);
+        query.with(pageable);
+        List<Event> events = mongoTemplate.find(query, Event.class);
+        long total = mongoTemplate.count(query.skip(0).limit(0), Event.class);
+
+        Page<Event> eventPage = new PageImpl<>(events, pageable, total);
+        return eventPage.map(this::mapToResponse);
     }
 }
