@@ -82,4 +82,17 @@ public class UserService {
         Page<User> userPage = userRepository.findAll(pageable);
         return userPage.map(this::mapToResponse);
     }
+
+    public UserResponseDTO demoteToUser(String userId){
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        if(user.getRole()==Role.USER)
+            throw new ConflictException("Role is already user");
+        long adminCount = userRepository.countByRole(Role.ADMIN);
+        if(adminCount<=1)
+            throw new ConflictException("Cannot demote the last admin");
+
+        user.setRole(Role.USER);
+        User savedUser = userRepository.save(user);
+        return mapToResponse(savedUser);
+    }
 }

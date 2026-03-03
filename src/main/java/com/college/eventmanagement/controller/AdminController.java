@@ -27,4 +27,8 @@ public class AdminController {
         return new ResponseEntity<>(userService.getAllUsers(page,size),HttpStatus.OK);
     }
 
+    @PutMapping("/users/{id}/demote")
+    public ResponseEntity<UserResponseDTO> demoteToUser(@PathVariable String id){
+        return new ResponseEntity<>(userService.demoteToUser(id),HttpStatus.OK);
+    }
 }
