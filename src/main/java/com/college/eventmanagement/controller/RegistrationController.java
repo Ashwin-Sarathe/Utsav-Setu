@@ -3,6 +3,8 @@ package com.college.eventmanagement.controller;
 import com.college.eventmanagement.dto.RegistrationRequestDTO;
 import com.college.eventmanagement.dto.RegistrationResponseDTO;
 import com.college.eventmanagement.service.RegistrationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,12 +15,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/registrations")
+@Tag(name="Event Registration APIs")
 public class RegistrationController {
 
     @Autowired
     private RegistrationService registrationService;
 
     @PostMapping
+    @Operation(summary = "Register For Event")
     public ResponseEntity<RegistrationResponseDTO> registerForEvent(@Valid @RequestBody RegistrationRequestDTO registrationRequestDTO){
         RegistrationResponseDTO registrationResponseDTO = registrationService.registerForEvent(registrationRequestDTO);
 
@@ -34,6 +38,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/user/{userId}")
+    @Operation(summary = "Get Registration By User ID")
     public ResponseEntity<List<RegistrationResponseDTO>> getRegistrationByUserId(@PathVariable String userId){
 
         List<RegistrationResponseDTO> registrationResponseDTOS = registrationService.findRegistrationByUserId(userId);
@@ -41,6 +46,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/event/{eventId}")
+    @Operation(summary = "Get Registration By Event ID")
     public ResponseEntity<List<RegistrationResponseDTO>> getRegistrationByEventId(@PathVariable String eventId){
         List<RegistrationResponseDTO> registrationResponseDTOS = registrationService.findRegistrationByEventId(eventId);
         return new ResponseEntity<>(registrationResponseDTOS, HttpStatus.OK);

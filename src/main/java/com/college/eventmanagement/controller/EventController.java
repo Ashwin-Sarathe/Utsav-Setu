@@ -4,6 +4,7 @@ import com.college.eventmanagement.dto.EventRequestDTO;
 import com.college.eventmanagement.dto.EventResponseDTO;
 import com.college.eventmanagement.dto.UpdateEventRequestDTO;
 import com.college.eventmanagement.service.EventService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/events")
+@Tag(name="Event APIs", description = "Create, Get All, Get + Delete + Update by Id, Search Events")
 public class EventController {
 
     @Autowired
