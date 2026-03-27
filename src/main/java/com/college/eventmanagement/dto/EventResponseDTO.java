@@ -20,6 +20,7 @@ public class EventResponseDTO {
     private LocalTime eventTime;
     private String venue;
     private Integer maxParticipants;
+    private Integer currentParticipants;
     private String createdBy;
     private LocalDateTime createdAt;
 }

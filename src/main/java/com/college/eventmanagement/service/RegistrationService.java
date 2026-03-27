@@ -40,8 +40,6 @@ public class RegistrationService {
 
     public RegistrationResponseDTO registerForEvent(RegistrationRequestDTO registrationRequestDTO){
 
-
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User Not found"));
@@ -120,8 +118,9 @@ public class RegistrationService {
         return mapToRegResponse(saved);
     }
 
-    public List<RegistrationResponseDTO> findRegistrationByUserId(String userId){
-        userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public List<RegistrationResponseDTO> findRegistrationByUserId(String username){
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        String userId = user.getId();
         List<Registration> registrations = registrationRepository.findByUserId(userId);
         List<RegistrationResponseDTO> registrationResponseDTOS = new ArrayList<>();
         for (Registration r : registrations){

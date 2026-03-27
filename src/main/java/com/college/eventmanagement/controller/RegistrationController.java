@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,13 +38,12 @@ public class RegistrationController {
         return new ResponseEntity<>(registrationResponseDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/user")
     @Operation(summary = "Get Registration By User ID")
-    public ResponseEntity<List<RegistrationResponseDTO>> getRegistrationByUserId(@PathVariable String userId){
-
+    public ResponseEntity<List<RegistrationResponseDTO>> getRegistrationByUserId(Authentication authentication){
+        String userId = authentication.getName();
         List<RegistrationResponseDTO> registrationResponseDTOS = registrationService.findRegistrationByUserId(userId);
-        return new ResponseEntity<>(registrationResponseDTOS,HttpStatus.OK);
-    }
+        return new ResponseEntity<>(registrationResponseDTOS, HttpStatus.OK);    }
 
     @GetMapping("/event/{eventId}")
     @Operation(summary = "Get Registration By Event ID")

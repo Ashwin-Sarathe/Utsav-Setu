@@ -76,6 +76,7 @@ public class EventService {
         eventResponse.setEventDate(savedEvent.getEventDate());
         eventResponse.setEventTime(savedEvent.getEventTime());
         eventResponse.setVenue(savedEvent.getVenue());
+        eventResponse.setCurrentParticipants(savedEvent.getCurrentParticipants());
         eventResponse.setMaxParticipants(savedEvent.getMaxParticipants());
         eventResponse.setCreatedBy(savedEvent.getCreatedBy());
         eventResponse.setId(savedEvent.getId());
