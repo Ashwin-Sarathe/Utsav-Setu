@@ -95,6 +95,19 @@ public class RegistrationService {
         registrationResponseDTO.setStatus(savedRegistration.getStatus());
         registrationResponseDTO.setRegisteredAt(savedRegistration.getRegisteredAt());
 
+        userRepository.findById(savedRegistration.getUserId()).ifPresent(user -> {
+            registrationResponseDTO.setName(user.getName());
+            registrationResponseDTO.setUsername(user.getUsername());
+        });
+
+        // Enrich the DTO with Event Details
+        eventRepository.findById(savedRegistration.getEventId()).ifPresent(event -> {
+            registrationResponseDTO.setEventTitle(event.getTitle());
+            registrationResponseDTO.setEventDate(event.getEventDate());
+            registrationResponseDTO.setEventTime(event.getEventTime());
+            registrationResponseDTO.setVenue(event.getVenue());
+        });
+
         return registrationResponseDTO;
     }
 

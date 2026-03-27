@@ -74,6 +74,8 @@ public class UserService {
         userResponseDTO.setRole(user.getRole());
         userResponseDTO.setUsername(user.getUsername());
         userResponseDTO.setName(user.getName());
+        userResponseDTO.setBranch(user.getBranch());
+        userResponseDTO.setSem(user.getSem());
         return userResponseDTO;
     }
 
