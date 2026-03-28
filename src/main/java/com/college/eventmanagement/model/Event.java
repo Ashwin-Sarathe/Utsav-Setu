@@ -1,6 +1,7 @@
 package com.college.eventmanagement.model;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 @Document(collection = "events")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Event {
 
     @Id
