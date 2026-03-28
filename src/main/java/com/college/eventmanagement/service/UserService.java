@@ -1,6 +1,7 @@
 package com.college.eventmanagement.service;
 
 import com.college.eventmanagement.dto.RegisterRequestDTO;
+import com.college.eventmanagement.dto.UserProfileDTO;
 import com.college.eventmanagement.dto.UserResponseDTO;
 import com.college.eventmanagement.exception.ConflictException;
 import com.college.eventmanagement.exception.ResourceNotFoundException;
@@ -96,5 +97,17 @@ public class UserService {
         user.setRole(Role.USER);
         User savedUser = userRepository.save(user);
         return mapToResponse(savedUser);
+    }
+
+    public void updateUserProfile(String username, UserProfileDTO userProfileDTO){
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (userProfileDTO.getEmail() != null) user.setEmail(userProfileDTO.getEmail());
+        if (userProfileDTO.getName() != null) user.setName(userProfileDTO.getName());
+        if (userProfileDTO.getBranch() != null) user.setBranch(userProfileDTO.getBranch());
+        if (userProfileDTO.getYear() != null) user.setYear(userProfileDTO.getYear());
+        if (userProfileDTO.getSem() != null) user.setSem(userProfileDTO.getSem());
+
+        userRepository.save(user);
     }
 }
