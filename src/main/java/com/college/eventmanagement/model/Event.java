@@ -35,4 +35,6 @@ public class Event {
     private String createdBy;
 
     private LocalDateTime createdAt;
+
+    private EventStatus status;
 }

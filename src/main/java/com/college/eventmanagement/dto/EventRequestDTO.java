@@ -1,6 +1,7 @@
 package com.college.eventmanagement.dto;
 
 
+import com.college.eventmanagement.model.EventStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -34,5 +35,6 @@ public class EventRequestDTO {
     @NotNull @Positive
     private Integer maxParticipants;
 
-
+    @NotNull
+    private EventStatus status;
 }

@@ -4,10 +4,7 @@ import com.college.eventmanagement.dto.RegistrationRequestDTO;
 import com.college.eventmanagement.dto.RegistrationResponseDTO;
 import com.college.eventmanagement.exception.ConflictException;
 import com.college.eventmanagement.exception.ResourceNotFoundException;
-import com.college.eventmanagement.model.Event;
-import com.college.eventmanagement.model.Registration;
-import com.college.eventmanagement.model.RegistrationStatus;
-import com.college.eventmanagement.model.User;
+import com.college.eventmanagement.model.*;
 import com.college.eventmanagement.repository.EventRepository;
 import com.college.eventmanagement.repository.RegistrationRepository;
 import com.college.eventmanagement.repository.UserRepository;
@@ -106,6 +103,8 @@ public class RegistrationService {
             registrationResponseDTO.setEventDate(event.getEventDate());
             registrationResponseDTO.setEventTime(event.getEventTime());
             registrationResponseDTO.setVenue(event.getVenue());
+
+            registrationResponseDTO.setEventStatus(event.getStatus() != null ? event.getStatus() : EventStatus.LIVE);
         });
 
         return registrationResponseDTO;

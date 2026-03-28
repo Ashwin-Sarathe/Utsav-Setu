@@ -1,5 +1,6 @@
 package com.college.eventmanagement.dto;
 
+import com.college.eventmanagement.model.EventStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,4 +24,5 @@ public class EventResponseDTO {
     private Integer currentParticipants;
     private String createdBy;
     private LocalDateTime createdAt;
+    private EventStatus status;
 }

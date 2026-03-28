@@ -6,6 +6,7 @@ import com.college.eventmanagement.dto.UpdateEventRequestDTO;
 import com.college.eventmanagement.exception.ConflictException;
 import com.college.eventmanagement.exception.ResourceNotFoundException;
 import com.college.eventmanagement.model.Event;
+import com.college.eventmanagement.model.EventStatus;
 import com.college.eventmanagement.model.User;
 import com.college.eventmanagement.repository.EventRepository;
 import com.college.eventmanagement.repository.UserRepository;
@@ -62,6 +63,12 @@ public class EventService {
             newEvent.setCurrentParticipants(0);
             newEvent.setCreatedAt(LocalDateTime.now());
 
+            if (eventRequest.getStatus() != null) {
+                newEvent.setStatus(eventRequest.getStatus());
+            } else {
+                newEvent.setStatus(EventStatus.LIVE); // Default fallback
+            }
+
             Event savedEvent = eventRepository.save(newEvent);
 
             return mapToResponse(savedEvent);
@@ -81,6 +88,7 @@ public class EventService {
         eventResponse.setCreatedBy(savedEvent.getCreatedBy());
         eventResponse.setId(savedEvent.getId());
         eventResponse.setCreatedAt(savedEvent.getCreatedAt());
+        eventResponse.setStatus(savedEvent.getStatus());
         return eventResponse;
     }
 
@@ -111,6 +119,9 @@ public class EventService {
         event.setDescription(dto.getDescription());
         event.setEventDate(dto.getEventDate());
         event.setMaxParticipants(dto.getMaxParticipants());
+        if (dto.getStatus() != null) {
+            event.setStatus(dto.getStatus());
+        }
 
         Event updatedEvent = eventRepository.save(event);
         return mapToResponse(updatedEvent);

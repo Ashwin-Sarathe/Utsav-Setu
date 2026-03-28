@@ -1,5 +1,6 @@
 package com.college.eventmanagement.dto;
 
+import com.college.eventmanagement.model.EventStatus;
 import com.college.eventmanagement.model.RegistrationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,4 +26,5 @@ public class RegistrationResponseDTO {
     private LocalDate eventDate;
     private LocalTime eventTime;
     private String venue;
+    private EventStatus eventStatus;
 }
