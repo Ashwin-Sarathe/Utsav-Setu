@@ -28,8 +28,8 @@ public class DashboardService {
         DashboardResponseDTO dashboardResponseDTO = new DashboardResponseDTO();
         dashboardResponseDTO.setTotalUsers(userRepository.count());
         dashboardResponseDTO.setTotalEvents(eventRepository.count());
-        dashboardResponseDTO.setTotalActiveRegistrations(registrationRepository.count());
-        dashboardResponseDTO.setTotalRegistrations(registrationRepository.countByStatus(RegistrationStatus.REGISTERED));
+        dashboardResponseDTO.setTotalRegistrations(registrationRepository.count());
+        dashboardResponseDTO.setTotalActiveRegistrations(registrationRepository.countByStatus(RegistrationStatus.REGISTERED));
         return dashboardResponseDTO;
     }
     public List<EventStatsDTO> getEventStats(){

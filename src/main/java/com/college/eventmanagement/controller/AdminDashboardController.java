@@ -28,7 +28,7 @@ public class AdminDashboardController {
         return new ResponseEntity<>(dashboardService.getSummary(), HttpStatus.OK);
     }
 
-    @GetMapping("/events")
+    @GetMapping("/event-stats")
     @Operation(summary = "Get All Events Stats")
     public ResponseEntity<List<EventStatsDTO>> getEventStats(){
         return new ResponseEntity<>(dashboardService.getEventStats(), HttpStatus.OK);
