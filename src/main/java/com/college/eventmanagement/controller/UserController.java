@@ -1,11 +1,13 @@
 package com.college.eventmanagement.controller;
 
+import com.college.eventmanagement.dto.ChangePasswordDTO;
 import com.college.eventmanagement.dto.UserProfileDTO;
 import com.college.eventmanagement.model.User;
 import com.college.eventmanagement.repository.UserRepository;
 import com.college.eventmanagement.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,4 +55,14 @@ public class UserController {
             return ResponseEntity.badRequest().body("{\"message\": \"" + e.getMessage() + "\"}");
         }
     }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@Valid @RequestBody ChangePasswordDTO changePasswordDTO, Principal principal){
+        try{
+            userService.changePassword(principal.getName(), changePasswordDTO);
+            return ResponseEntity.ok().body("{\"message\": \"Password changed successfully!\"}");        }
+        catch (Exception e){
+            return ResponseEntity.badRequest().body("{\"message\": \"" + e.getMessage() + "\"}");        }
+    }
+
 }

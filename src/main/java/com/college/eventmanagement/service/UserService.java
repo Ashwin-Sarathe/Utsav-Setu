@@ -1,5 +1,6 @@
 package com.college.eventmanagement.service;
 
+import com.college.eventmanagement.dto.ChangePasswordDTO;
 import com.college.eventmanagement.dto.RegisterRequestDTO;
 import com.college.eventmanagement.dto.UserProfileDTO;
 import com.college.eventmanagement.dto.UserResponseDTO;
@@ -108,6 +109,18 @@ public class UserService {
         if (userProfileDTO.getYear() != null) user.setYear(userProfileDTO.getYear());
         if (userProfileDTO.getSem() != null) user.setSem(userProfileDTO.getSem());
 
+        userRepository.save(user);
+    }
+
+    public void changePassword(String username, ChangePasswordDTO changePasswordDTO){
+
+        User user  = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if(!passwordEncoder.matches(changePasswordDTO.getCurrentPassword(), user.getPassword())){
+            throw new RuntimeException("Incorrect current password");
+        }
+
+        user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
         userRepository.save(user);
     }
 }
