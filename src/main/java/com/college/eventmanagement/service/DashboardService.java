@@ -23,14 +23,6 @@ public class DashboardService {
     @Autowired
     private RegistrationRepository registrationRepository;
 
-    public DashboardResponseDTO getSummary(){
-        DashboardResponseDTO dashboardResponseDTO = new DashboardResponseDTO();
-        dashboardResponseDTO.setTotalUsers(userRepository.count());
-        dashboardResponseDTO.setTotalEvents(eventRepository.count());
-        dashboardResponseDTO.setTotalRegistrations(registrationRepository.count());
-        dashboardResponseDTO.setTotalActiveRegistrations(registrationRepository.countByStatus(RegistrationStatus.REGISTERED));
-        return dashboardResponseDTO;
-    }
     public List<EventStatsDTO> getEventStats(String adminId, String username) {
         List<Event> events;
 
