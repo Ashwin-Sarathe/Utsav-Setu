@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/public/health").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/events/create-event").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/events/delete-event-by-id/**").hasRole("ADMIN")
