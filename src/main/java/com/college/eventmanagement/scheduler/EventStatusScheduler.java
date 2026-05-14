@@ -17,7 +17,7 @@ public class EventStatusScheduler {
     private EventRepository eventRepository;
 
     // This cron expression means: Run at 00:00:00 (Midnight) every single day
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(fixedRate = 10000)
     public void autoUpdatePastEvents() {
         System.out.println("Running midnight check for expired events...");
 
