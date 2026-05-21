@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
 @Service
 public class EventService {
 
@@ -43,38 +42,36 @@ public class EventService {
 
         User admin = userRepository.findByUsername(username).orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Optional<Event> optionalEvent= eventRepository.findByTitleAndEventDateAndEventTimeAndVenue
-                (
-                        eventRequest.getTitle(),
-                        eventRequest.getEventDate(),
-                        eventRequest.getEventTime(),
-                        eventRequest.getVenue()
-                );
+        Optional<Event> optionalEvent = eventRepository.findByTitleAndEventDateAndEventTimeAndVenueAndIsDeletedFalse(
+                eventRequest.getTitle(),
+                eventRequest.getEventDate(),
+                eventRequest.getEventTime(),
+                eventRequest.getVenue()
+        );
+
         if(optionalEvent.isPresent()) throw new ConflictException("Event Already Exists!!");
-        else {
-            Event newEvent = new Event();
-            newEvent.setTitle(eventRequest.getTitle());
-            newEvent.setDescription(eventRequest.getDescription());
-            newEvent.setEventDate(eventRequest.getEventDate());
-            newEvent.setEventTime(eventRequest.getEventTime());
-            newEvent.setVenue(eventRequest.getVenue());
-            newEvent.setMaxParticipants(eventRequest.getMaxParticipants());
-            newEvent.setCreatedBy(admin.getId());
-            newEvent.setCurrentParticipants(0);
-            newEvent.setCreatedAt(LocalDateTime.now());
 
-            if (eventRequest.getStatus() != null) {
-                newEvent.setStatus(eventRequest.getStatus());
-            } else {
-                newEvent.setStatus(EventStatus.LIVE); // Default fallback
-            }
+        Event newEvent = new Event();
+        newEvent.setTitle(eventRequest.getTitle());
+        newEvent.setDescription(eventRequest.getDescription());
+        newEvent.setEventDate(eventRequest.getEventDate());
+        newEvent.setEventTime(eventRequest.getEventTime());
+        newEvent.setVenue(eventRequest.getVenue());
+        newEvent.setMaxParticipants(eventRequest.getMaxParticipants());
+        newEvent.setCreatedBy(admin.getId());
+        newEvent.setCurrentParticipants(0);
+        newEvent.setCreatedAt(LocalDateTime.now());
+        newEvent.setIsDeleted(false);
 
-            Event savedEvent = eventRepository.save(newEvent);
-
-            return mapToResponse(savedEvent);
+        if (eventRequest.getStatus() != null) {
+            newEvent.setStatus(eventRequest.getStatus());
+        } else {
+            newEvent.setStatus(EventStatus.LIVE);
         }
-    }
 
+        Event savedEvent = eventRepository.save(newEvent);
+        return mapToResponse(savedEvent);
+    }
 
     private EventResponseDTO mapToResponse(Event savedEvent) {
         EventResponseDTO eventResponse = new EventResponseDTO();
@@ -93,26 +90,33 @@ public class EventService {
     }
 
     public Page<EventResponseDTO> getAllEvents(Pageable pageable){
-        Page<Event> eventsPage = eventRepository.findAll(pageable);
+        Page<Event> eventsPage = eventRepository.findByIsDeletedFalse(pageable);
         return eventsPage.map(this::mapToResponse);
     }
 
     public EventResponseDTO getEventById(String id){
-        Event e = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event Not Found!!"));
+        Event e = eventRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event Not Found!!"));
         return mapToResponse(e);
     }
 
-    public EventResponseDTO deleteEventById(String id){
-        Event e = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event Not Found!"));
-        eventRepository.deleteById(id);
-        return mapToResponse(e);
+    public void deleteEventById(String id){
+        Event e = eventRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event Not Found!"));
+
+        e.setIsDeleted(true);
+        e.setDeletedAt(LocalDateTime.now());
+        eventRepository.save(e);
     }
 
     public EventResponseDTO updateEvent(String id, UpdateEventRequestDTO dto){
-        Event event = eventRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+        Event event = eventRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Event not found"));
+
         if(dto.getMaxParticipants() < event.getCurrentParticipants()){
             throw new ConflictException("Cannot reduce capacity below current registrations");
         }
+
         event.setTitle(dto.getTitle());
         event.setVenue(dto.getVenue());
         event.setEventTime(dto.getEventTime());
@@ -136,26 +140,25 @@ public class EventService {
     ){
         Query query = new Query();
         List<Criteria> criteriaList = new ArrayList<>();
+
+        // Always filter out deleted events in search
+        criteriaList.add(Criteria.where("isDeleted").is(false));
+
         if(title != null && !title.isEmpty()){
-            criteriaList.add(
-                    Criteria.where("title").regex(title,"i")
-                    // "i" makes it case-insensitive
-                    // regex -> partial case-insensitive matching
-            );
+            criteriaList.add(Criteria.where("title").regex(title,"i"));
         }
         if(venue != null && !venue.isEmpty()){
-            criteriaList.add(
-                    Criteria.where("venue").regex(venue,"i")
-            );
+            criteriaList.add(Criteria.where("venue").regex(venue,"i"));
         }
-        if(date!=null){
-            criteriaList.add(Criteria.where("date").is(date));
+        if(date != null){
+            criteriaList.add(Criteria.where("eventDate").is(date));
         }
-        if(!criteriaList.isEmpty()){
-            query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
-        }
+
+        query.addCriteria(new Criteria().andOperator(criteriaList.toArray(new Criteria[0])));
+
         Pageable pageable = PageRequest.of(page,size);
         query.with(pageable);
+
         List<Event> events = mongoTemplate.find(query, Event.class);
         long total = mongoTemplate.count(query.skip(0).limit(0), Event.class);
 

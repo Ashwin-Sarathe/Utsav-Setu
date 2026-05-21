@@ -29,9 +29,9 @@ public class DashboardService {
         // 1. Check the role and fetch the appropriate list of events
         // (Adjust "SUPER_ADMIN" to match whatever your actual Role enum/string is)
         if (username.equals("admin")) {
-            events = eventRepository.findAll();
+            events = eventRepository.findByIsDeletedFalse();
         } else {
-            events = eventRepository.findByCreatedBy(adminId);
+            events = eventRepository.findByCreatedByAndIsDeletedFalse(adminId);
         }
 
         // 2. Map the fetched events to your DTO using your exact Stream logic
@@ -65,7 +65,7 @@ public class DashboardService {
 
             // 1. Fetch the actual events (Foolproof way to avoid projection issues)
             // Make sure 'createdBy' matches the exact variable name in your Event model!
-            List<Event> myEvents = eventRepository.findByCreatedBy(currentAdminId);
+            List<Event> myEvents = eventRepository.findByCreatedByAndIsDeletedFalse(currentAdminId);
 
             if (myEvents.isEmpty()) {
                 stats.setTotalEvents(0L);

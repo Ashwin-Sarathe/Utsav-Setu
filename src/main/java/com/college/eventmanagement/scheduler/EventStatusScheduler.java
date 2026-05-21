@@ -21,7 +21,7 @@ public class EventStatusScheduler {
     public void autoUpdatePastEvents() {
         System.out.println("Running midnight check for expired events...");
 
-        List<Event> allEvents = eventRepository.findAll();
+        List<Event> allEvents = eventRepository.findByIsDeletedFalse();
         LocalDate today = LocalDate.now();
 
         for (Event event : allEvents) {

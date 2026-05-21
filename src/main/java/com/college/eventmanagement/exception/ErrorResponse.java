@@ -30,3 +30,4 @@ public class ErrorResponse {
         this.message = message;
         this.validationErrors = validationErrors;
     }
+}

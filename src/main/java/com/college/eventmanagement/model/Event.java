@@ -39,4 +39,8 @@ public class Event {
     private LocalDateTime createdAt;
 
     private EventStatus status;
+
+    private Boolean isDeleted = false;
+
+    private LocalDateTime deletedAt;
 }
