@@ -2,9 +2,7 @@ package com.college.eventmanagement.dto;
 
 
 import com.college.eventmanagement.model.EventStatus;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +21,7 @@ public class EventRequestDTO {
     @NotBlank
     private String description;
 
-    @NotNull
+    @NotNull @Future
     private LocalDate eventDate;
 
     @NotNull
@@ -32,7 +30,7 @@ public class EventRequestDTO {
     @NotBlank
     private String venue;
 
-    @NotNull @Positive
+    @NotNull @Positive @Min(value=1)
     private Integer maxParticipants;
 
     @NotNull
