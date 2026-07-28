@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -35,4 +36,6 @@ public class EventRequestDTO {
 
     @NotNull
     private EventStatus status;
+
+    private List<String> imageUrls;
 }

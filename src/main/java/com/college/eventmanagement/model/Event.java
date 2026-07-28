@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Document(collection = "events")
 @Data
@@ -43,4 +44,6 @@ public class Event {
     private Boolean isDeleted = false;
 
     private LocalDateTime deletedAt;
+
+    private List<String> imageUrls;
 }

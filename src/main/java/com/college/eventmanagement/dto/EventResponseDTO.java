@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,4 +26,5 @@ public class EventResponseDTO {
     private String createdBy;
     private LocalDateTime createdAt;
     private EventStatus status;
+    private List<String> imageUrls;
 }

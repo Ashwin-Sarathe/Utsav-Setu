@@ -69,6 +69,12 @@ public class EventService {
             newEvent.setStatus(EventStatus.LIVE);
         }
 
+        if (eventRequest.getImageUrls() == null || eventRequest.getImageUrls().isEmpty()) {
+            newEvent.setImageUrls(List.of("https://placehold.co/600x400?text=No+Image+Available"));
+        } else {
+            newEvent.setImageUrls(eventRequest.getImageUrls());
+        }
+
         Event savedEvent = eventRepository.save(newEvent);
         return mapToResponse(savedEvent);
     }
@@ -86,6 +92,7 @@ public class EventService {
         eventResponse.setId(savedEvent.getId());
         eventResponse.setCreatedAt(savedEvent.getCreatedAt());
         eventResponse.setStatus(savedEvent.getStatus());
+        eventResponse.setImageUrls(savedEvent.getImageUrls());
         return eventResponse;
     }
 
@@ -125,6 +132,10 @@ public class EventService {
         event.setMaxParticipants(dto.getMaxParticipants());
         if (dto.getStatus() != null) {
             event.setStatus(dto.getStatus());
+        }
+
+        if (dto.getImageUrls() != null && !dto.getImageUrls().isEmpty()) {
+            event.setImageUrls(dto.getImageUrls());
         }
 
         Event updatedEvent = eventRepository.save(event);
